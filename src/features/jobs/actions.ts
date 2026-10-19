@@ -187,6 +187,8 @@ export async function getJobs(params?: {
   customerId?: string;
   startDate?: string;
   endDate?: string;
+  limit?: number;
+  offset?: number;
 }): Promise<{ data?: JobListItem[]; error?: string }> {
   try {
     const session = await requireMembership();
@@ -194,6 +196,9 @@ export async function getJobs(params?: {
     const userRole = session.membership.role;
     const userId = session.user.id;
     const supabase = await createClient();
+
+    const limit = Math.min(Math.max(params?.limit ?? 100, 1), 500);
+    const offset = Math.max(params?.offset ?? 0, 0);
 
     let query = supabase
       .from("jobs")
@@ -223,7 +228,8 @@ export async function getJobs(params?: {
         )
       `)
       .eq("organization_id", orgId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
 
     // Status filter
     if (params?.status && params.status !== "all") {

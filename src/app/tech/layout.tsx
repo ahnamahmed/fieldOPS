@@ -112,10 +112,10 @@ function TechHeaderAndNav({ children }: { children: React.ReactNode }) {
           </Link>
 
           <Link
-            href="/tech/jobs/job-1"
+            href={pathname.startsWith("/tech/jobs/") ? pathname : "/tech/jobs"}
             className={cn(
               "flex flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors active:bg-slate-50",
-              pathname.includes("/tech/jobs/job-")
+              pathname.startsWith("/tech/jobs/") && pathname !== "/tech/jobs"
                 ? "text-blue-600 border-t-2 border-blue-600 bg-blue-50/20"
                 : "text-slate-500 hover:text-slate-900"
             )}

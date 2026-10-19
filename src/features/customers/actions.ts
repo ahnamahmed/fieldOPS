@@ -65,11 +65,16 @@ export async function getCustomers(params?: {
   search?: string;
   customerType?: string;
   includeArchived?: boolean;
+  limit?: number;
+  offset?: number;
 }): Promise<{ data?: CustomerListItem[]; error?: string }> {
   try {
     const session = await requireMembership();
     const orgId = session.membership.organizationId;
     const supabase = await createClient();
+
+    const limit = Math.min(Math.max(params?.limit ?? 100, 1), 500);
+    const offset = Math.max(params?.offset ?? 0, 0);
 
     let query = supabase
       .from("customers")
@@ -91,7 +96,8 @@ export async function getCustomers(params?: {
         equipment_assets!equipment_assets_customer_id_fkey(id, is_archived)
       `)
       .eq("organization_id", orgId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (!params?.includeArchived) {
       query = query.eq("is_archived", false);

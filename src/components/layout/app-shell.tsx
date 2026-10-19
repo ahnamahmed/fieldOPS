@@ -14,6 +14,7 @@ import {
   CreditCard,
   UserCheck,
   Settings,
+  BarChart3,
   Menu,
   X,
   Smartphone,
@@ -38,6 +39,7 @@ const NAV_ITEMS = [
   { label: "AMC Contracts", href: "/app/contracts", icon: FileCheck2 },
   { label: "Quotes", href: "/app/quotes", icon: FileText },
   { label: "Invoices", href: "/app/invoices", icon: CreditCard },
+  { label: "Reports", href: "/app/reports", icon: BarChart3 },
   { label: "Team", href: "/app/team", icon: UserCheck },
   { label: "Settings", href: "/app/settings", icon: Settings },
 ];

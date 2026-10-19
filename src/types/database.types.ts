@@ -62,6 +62,86 @@ export type Database = {
           },
         ]
       }
+      contract_planned_visits: {
+        Row: {
+          completed_at: string | null
+          contract_id: string
+          created_at: string
+          description: string | null
+          id: string
+          job_id: string | null
+          notes: string | null
+          organization_id: string
+          planned_date: string
+          service_site_id: string | null
+          status: string
+          title: string
+          updated_at: string
+          visit_number: number
+        }
+        Insert: {
+          completed_at?: string | null
+          contract_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          organization_id: string
+          planned_date: string
+          service_site_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          visit_number?: number
+        }
+        Update: {
+          completed_at?: string | null
+          contract_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          organization_id?: string
+          planned_date?: string
+          service_site_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          visit_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_planned_visits_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "service_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_planned_visits_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_planned_visits_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_planned_visits_service_site_id_fkey"
+            columns: ["service_site_id"]
+            isOneToOne: false
+            referencedRelation: "service_sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           alternate_phone: string | null
@@ -276,6 +356,7 @@ export type Database = {
           description: string
           id: string
           invoice_id: string
+          item_type: string | null
           line_total: number
           quantity: number
           sort_order: number | null
@@ -285,6 +366,7 @@ export type Database = {
           description: string
           id?: string
           invoice_id: string
+          item_type?: string | null
           line_total: number
           quantity: number
           sort_order?: number | null
@@ -294,6 +376,7 @@ export type Database = {
           description?: string
           id?: string
           invoice_id?: string
+          item_type?: string | null
           line_total?: number
           quantity?: number
           sort_order?: number | null
@@ -313,6 +396,7 @@ export type Database = {
         Row: {
           balance_due: number
           created_at: string
+          created_by: string | null
           customer_id: string
           discount_amount: number
           due_date: string
@@ -335,6 +419,7 @@ export type Database = {
         Insert: {
           balance_due?: number
           created_at?: string
+          created_by?: string | null
           customer_id: string
           discount_amount?: number
           due_date: string
@@ -357,6 +442,7 @@ export type Database = {
         Update: {
           balance_due?: number
           created_at?: string
+          created_by?: string | null
           customer_id?: string
           discount_amount?: number
           due_date?: string
@@ -377,6 +463,13 @@ export type Database = {
           vat_rate?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "invoices_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invoices_customer_id_fkey"
             columns: ["customer_id"]
@@ -555,48 +648,60 @@ export type Database = {
       }
       job_checklists: {
         Row: {
+          category: string | null
           field_type: string
           id: string
           is_mandatory: boolean
           item_key: string
           job_id: string
           label: string
+          notes: string | null
           organization_id: string
           passed: boolean | null
           recorded_at: string
           recorded_by: string | null
+          result: string | null
+          unit: string | null
           value_boolean: boolean | null
           value_number: number | null
           value_text: string | null
           visit_id: string | null
         }
         Insert: {
+          category?: string | null
           field_type: string
           id?: string
           is_mandatory?: boolean
           item_key: string
           job_id: string
           label: string
+          notes?: string | null
           organization_id: string
           passed?: boolean | null
           recorded_at?: string
           recorded_by?: string | null
+          result?: string | null
+          unit?: string | null
           value_boolean?: boolean | null
           value_number?: number | null
           value_text?: string | null
           visit_id?: string | null
         }
         Update: {
+          category?: string | null
           field_type?: string
           id?: string
           is_mandatory?: boolean
           item_key?: string
           job_id?: string
           label?: string
+          notes?: string | null
           organization_id?: string
           passed?: boolean | null
           recorded_at?: string
           recorded_by?: string | null
+          result?: string | null
+          unit?: string | null
           value_boolean?: boolean | null
           value_number?: number | null
           value_text?: string | null
@@ -639,6 +744,7 @@ export type Database = {
           id: string
           is_billable: boolean
           job_id: string
+          notes: string | null
           organization_id: string
           part_name: string
           quantity: number
@@ -651,6 +757,7 @@ export type Database = {
           id?: string
           is_billable?: boolean
           job_id: string
+          notes?: string | null
           organization_id: string
           part_name: string
           quantity: number
@@ -663,6 +770,7 @@ export type Database = {
           id?: string
           is_billable?: boolean
           job_id?: string
+          notes?: string | null
           organization_id?: string
           part_name?: string
           quantity?: number
@@ -671,6 +779,13 @@ export type Database = {
           unit_price?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_job_parts_used_job_org"
+            columns: ["job_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id", "organization_id"]
+          },
           {
             foreignKeyName: "job_parts_used_job_id_fkey"
             columns: ["job_id"]
@@ -765,6 +880,8 @@ export type Database = {
       }
       jobs: {
         Row: {
+          actual_end: string | null
+          actual_start: string | null
           asset_id: string | null
           assigned_notes: string | null
           completed_at: string | null
@@ -777,6 +894,7 @@ export type Database = {
           equipment_asset_id: string | null
           estimated_duration: number | null
           estimated_duration_minutes: number | null
+          follow_up_recommendation: string | null
           id: string
           job_number: string
           job_type: string
@@ -790,8 +908,11 @@ export type Database = {
           status: string
           title: string
           updated_at: string
+          work_performed: string | null
         }
         Insert: {
+          actual_end?: string | null
+          actual_start?: string | null
           asset_id?: string | null
           assigned_notes?: string | null
           completed_at?: string | null
@@ -804,6 +925,7 @@ export type Database = {
           equipment_asset_id?: string | null
           estimated_duration?: number | null
           estimated_duration_minutes?: number | null
+          follow_up_recommendation?: string | null
           id?: string
           job_number: string
           job_type: string
@@ -817,8 +939,11 @@ export type Database = {
           status?: string
           title: string
           updated_at?: string
+          work_performed?: string | null
         }
         Update: {
+          actual_end?: string | null
+          actual_start?: string | null
           asset_id?: string | null
           assigned_notes?: string | null
           completed_at?: string | null
@@ -831,6 +956,7 @@ export type Database = {
           equipment_asset_id?: string | null
           estimated_duration?: number | null
           estimated_duration_minutes?: number | null
+          follow_up_recommendation?: string | null
           id?: string
           job_number?: string
           job_type?: string
@@ -844,6 +970,7 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          work_performed?: string | null
         }
         Relationships: [
           {
@@ -1106,6 +1233,7 @@ export type Database = {
         Row: {
           description: string
           id: string
+          item_type: string | null
           line_total: number
           quantity: number
           quote_id: string
@@ -1115,6 +1243,7 @@ export type Database = {
         Insert: {
           description: string
           id?: string
+          item_type?: string | null
           line_total: number
           quantity: number
           quote_id: string
@@ -1124,6 +1253,7 @@ export type Database = {
         Update: {
           description?: string
           id?: string
+          item_type?: string | null
           line_total?: number
           quantity?: number
           quote_id?: string
@@ -1144,9 +1274,11 @@ export type Database = {
         Row: {
           accepted_at: string | null
           created_at: string
+          created_by: string | null
           customer_id: string
           discount_amount: number
           id: string
+          issue_date: string
           job_id: string | null
           notes: string | null
           organization_id: string
@@ -1163,9 +1295,11 @@ export type Database = {
         Insert: {
           accepted_at?: string | null
           created_at?: string
+          created_by?: string | null
           customer_id: string
           discount_amount?: number
           id?: string
+          issue_date?: string
           job_id?: string | null
           notes?: string | null
           organization_id: string
@@ -1182,9 +1316,11 @@ export type Database = {
         Update: {
           accepted_at?: string | null
           created_at?: string
+          created_by?: string | null
           customer_id?: string
           discount_amount?: number
           id?: string
+          issue_date?: string
           job_id?: string | null
           notes?: string | null
           organization_id?: string
@@ -1199,6 +1335,13 @@ export type Database = {
           vat_rate?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "quotes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "quotes_customer_id_fkey"
             columns: ["customer_id"]
@@ -1226,17 +1369,26 @@ export type Database = {
         Row: {
           asset_id: string
           contract_id: string
+          created_at: string | null
           id: string
+          notes: string | null
+          organization_id: string | null
         }
         Insert: {
           asset_id: string
           contract_id: string
+          created_at?: string | null
           id?: string
+          notes?: string | null
+          organization_id?: string | null
         }
         Update: {
           asset_id?: string
           contract_id?: string
+          created_at?: string | null
           id?: string
+          notes?: string | null
+          organization_id?: string | null
         }
         Relationships: [
           {
@@ -1251,6 +1403,13 @@ export type Database = {
             columns: ["contract_id"]
             isOneToOne: false
             referencedRelation: "service_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_contract_assets_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -1303,56 +1462,93 @@ export type Database = {
       service_contracts: {
         Row: {
           billing_frequency: string
+          contract_amount: number | null
+          contract_name: string | null
           contract_number: string
           contract_type: string
           created_at: string
+          created_by: string | null
           customer_id: string
+          description: string | null
           end_date: string
           id: string
           organization_id: string
+          renewal_notes: string | null
+          renewed_from_id: string | null
+          renewed_to_id: string | null
+          service_frequency: string | null
           service_interval_months: number
+          service_site_id: string | null
           special_terms: string | null
           start_date: string
           status: string
+          terms: string | null
           title: string
           total_contract_value: number
           updated_at: string
         }
         Insert: {
           billing_frequency: string
+          contract_amount?: number | null
+          contract_name?: string | null
           contract_number: string
           contract_type: string
           created_at?: string
+          created_by?: string | null
           customer_id: string
+          description?: string | null
           end_date: string
           id?: string
           organization_id: string
+          renewal_notes?: string | null
+          renewed_from_id?: string | null
+          renewed_to_id?: string | null
+          service_frequency?: string | null
           service_interval_months?: number
+          service_site_id?: string | null
           special_terms?: string | null
           start_date: string
           status?: string
+          terms?: string | null
           title: string
           total_contract_value?: number
           updated_at?: string
         }
         Update: {
           billing_frequency?: string
+          contract_amount?: number | null
+          contract_name?: string | null
           contract_number?: string
           contract_type?: string
           created_at?: string
+          created_by?: string | null
           customer_id?: string
+          description?: string | null
           end_date?: string
           id?: string
           organization_id?: string
+          renewal_notes?: string | null
+          renewed_from_id?: string | null
+          renewed_to_id?: string | null
+          service_frequency?: string | null
           service_interval_months?: number
+          service_site_id?: string | null
           special_terms?: string | null
           start_date?: string
           status?: string
+          terms?: string | null
           title?: string
           total_contract_value?: number
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "service_contracts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "service_contracts_customer_id_fkey"
             columns: ["customer_id"]
@@ -1365,6 +1561,140 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_contracts_renewed_from_id_fkey"
+            columns: ["renewed_from_id"]
+            isOneToOne: false
+            referencedRelation: "service_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_contracts_renewed_to_id_fkey"
+            columns: ["renewed_to_id"]
+            isOneToOne: false
+            referencedRelation: "service_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_contracts_service_site_id_fkey"
+            columns: ["service_site_id"]
+            isOneToOne: false
+            referencedRelation: "service_sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_reminders: {
+        Row: {
+          channel: string
+          contract_id: string | null
+          created_at: string
+          customer_id: string
+          delivered_at: string | null
+          delivered_by: string | null
+          delivery_details: Json | null
+          due_date: string
+          id: string
+          invoice_id: string | null
+          job_id: string | null
+          message: string
+          organization_id: string
+          planned_visit_id: string | null
+          reminder_type: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          contract_id?: string | null
+          created_at?: string
+          customer_id: string
+          delivered_at?: string | null
+          delivered_by?: string | null
+          delivery_details?: Json | null
+          due_date: string
+          id?: string
+          invoice_id?: string | null
+          job_id?: string | null
+          message: string
+          organization_id: string
+          planned_visit_id?: string | null
+          reminder_type: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          contract_id?: string | null
+          created_at?: string
+          customer_id?: string
+          delivered_at?: string | null
+          delivered_by?: string | null
+          delivery_details?: Json | null
+          due_date?: string
+          id?: string
+          invoice_id?: string | null
+          job_id?: string | null
+          message?: string
+          organization_id?: string
+          planned_visit_id?: string | null
+          reminder_type?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_reminders_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "service_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_reminders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_reminders_delivered_by_fkey"
+            columns: ["delivered_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_reminders_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_reminders_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_reminders_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_reminders_planned_visit_id_fkey"
+            columns: ["planned_visit_id"]
+            isOneToOne: false
+            referencedRelation: "contract_planned_visits"
             referencedColumns: ["id"]
           },
         ]
@@ -1561,6 +1891,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      convert_planned_visit_to_job: {
+        Args: {
+          p_org_id: string
+          p_technician_id?: string
+          p_user_id: string
+          p_visit_id: string
+        }
+        Returns: string
+      }
+      convert_quote_to_invoice: {
+        Args: { p_org_id: string; p_quote_id: string; p_user_id: string }
+        Returns: string
+      }
+      convert_quote_to_job: {
+        Args: {
+          p_org_id: string
+          p_quote_id: string
+          p_scheduled_start: string
+          p_title: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       create_organization_with_owner:
         | {
             Args: {
@@ -1584,6 +1937,10 @@ export type Database = {
             }
             Returns: string
           }
+      generate_contract_planned_visits: {
+        Args: { p_contract_id: string; p_org_id: string }
+        Returns: number
+      }
       get_next_document_number: {
         Args: { doc_type: string; prefix: string; target_org_id: string }
         Returns: string
@@ -1601,9 +1958,47 @@ export type Database = {
         }[]
       }
       get_user_organizations: { Args: never; Returns: string[] }
+      record_invoice_payment: {
+        Args: {
+          p_amount: number
+          p_date: string
+          p_invoice_id: string
+          p_method: string
+          p_notes: string
+          p_org_id: string
+          p_recorded_by: string
+          p_reference: string
+        }
+        Returns: Json
+      }
+      renew_service_contract: {
+        Args: {
+          p_contract_id: string
+          p_new_amount: number
+          p_new_end_date: string
+          p_new_start_date: string
+          p_org_id: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      seed_job_standard_checklist: {
+        Args: { p_job_id: string }
+        Returns: number
+      }
+      sync_service_reminders: { Args: { p_org_id: string }; Returns: number }
       user_has_role: {
         Args: { allowed_roles: string[]; target_org_id: string }
         Returns: boolean
+      }
+      void_invoice_payment: {
+        Args: {
+          p_org_id: string
+          p_payment_id: string
+          p_reason: string
+          p_user_id: string
+        }
+        Returns: Json
       }
     }
     Enums: {

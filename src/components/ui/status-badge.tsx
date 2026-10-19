@@ -23,7 +23,9 @@ export type StatusType =
   // Quote Statuses
   | "sent"
   | "accepted"
+  | "rejected"
   | "expired"
+  | "void"
   // Equipment Condition
   | "operational"
   | "needs_service"
@@ -77,10 +79,12 @@ export function StatusBadge({ status, label, className }: StatusBadgeProps) {
       if (norm === "renewal_due" && !label) displayLabel = "Renewal Due";
       break;
 
-    // Red / High / Urgent / Overdue
+    // Red / High / Urgent / Overdue / Rejected / Void
     case "high":
     case "urgent":
     case "overdue":
+    case "rejected":
+    case "void":
     case "under_repair":
       styles = "bg-rose-50 text-rose-700 border-rose-200";
       if (norm === "under_repair" && !label) displayLabel = "Under Repair";
